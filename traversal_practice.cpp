@@ -5,8 +5,6 @@
 
 using namespace std;
 
-
-
 vector<int> bfs(vector<vector<int>> graph, int start) {
   vector<bool> discovered(graph.size(), false);
   vector<bool> processed(graph.size(), false);
@@ -21,7 +19,6 @@ vector<int> bfs(vector<vector<int>> graph, int start) {
   while(!q.empty()) {
     parent = q.front();
     q.pop();
-    cout << "processing vertex: " << parent << endl;
     processed[parent] = true;
 
     for(int i = 0; i < graph[parent].size(); i++) {
@@ -30,11 +27,11 @@ vector<int> bfs(vector<vector<int>> graph, int start) {
         //process edge (parent, curVertex)
         cout << "processing edge: " << parent << "," << curVertex << endl;
       }
-
-      if(!discovered[curVertex])
+      if(!discovered[curVertex]) {
         q.push(curVertex);
         discovered[curVertex] = true;
         relationships[curVertex] = parent;
+      }
     }
   }
   return relationships;
@@ -44,14 +41,16 @@ vector<int> buildPath(int target, vector<int> relationships, vector<int> path) {
   if(relationships[target] == -1) {
     return path;
   }
-  path.push_back(relationships[target]);
+  path.insert(path.begin(),relationships[target]);
   return buildPath(relationships[target], relationships, path);
 }
 
 vector<int> shortestPathBFS(int start, int target, vector<vector<int>> graph) {
   vector<int> relationships = bfs(graph, start);
   vector<int> path;
-  return buildPath(target, relationships, path);
+  vector<int> sp = buildPath(target, relationships, path);
+  sp.push_back(target); //add the target as the last node in the path
+  return sp;
 }
 
 int main() {
